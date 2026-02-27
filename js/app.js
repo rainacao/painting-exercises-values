@@ -1,6 +1,5 @@
 // ── Elements ──────────────────────────────────────────────────────────────
 const fileInput      = document.getElementById('file-input');
-const hint           = document.getElementById('hint');
 const stage          = document.getElementById('stage');
 const refContainer   = document.getElementById('ref-container');
 const canvasContainer = document.getElementById('canvas-container');
@@ -9,15 +8,21 @@ const canvas         = document.getElementById('drawing-canvas');
 const ctx            = canvas.getContext('2d');
 const swatches       = document.querySelectorAll('.swatch');
 const slider         = document.getElementById('brush-size-slider');
-const brushDot       = document.getElementById('brush-dot');
+const brushSizeValue = document.getElementById('brush-size-value');
 const clearBtn       = document.getElementById('clear-btn');
 const exportBtn      = document.getElementById('export-btn');
 const savePngBtn     = document.getElementById('save-png-btn');
 const bwBtn          = document.getElementById('bw-btn');
 const blurSlider     = document.getElementById('blur-slider');
 const blurValue      = document.getElementById('blur-value');
+const zoomSlider     = document.getElementById('zoom-slider');
+const zoomValue      = document.getElementById('zoom-value');
 const refToolbar     = document.getElementById('ref-toolbar');
-const cursorRing     = document.getElementById('cursor-ring');
+const cursorRing       = document.getElementById('cursor-ring');
+const exampleThumbs    = document.querySelectorAll('.example-thumb');
+const landing          = document.getElementById('landing');
+const topControls      = document.getElementById('top-controls');
+const changeImageBtn   = document.getElementById('change-image-btn');
 
 // ── State ─────────────────────────────────────────────────────────────────
 let currentColor = '0,0,0';
@@ -30,9 +35,7 @@ let blurAmount   = 0;
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 function updateBrushPreview() {
-  const capped = Math.min(brushSize, 100);
-  brushDot.style.width  = capped + 'px';
-  brushDot.style.height = capped + 'px';
+  brushSizeValue.textContent = brushSize + 'px';
 }
 
 function updateCursorRing(x, y) {
@@ -95,7 +98,10 @@ function clearCanvas() {
 const MAX_SIDE = 500; // max px for the longer side of both images
 
 // Persisted across resize events
-let currentDispW  = 0;
+let currentDispW     = 0;
+let baseDispW        = 0;
+let baseDispH        = 0;
+let zoomLevel        = 1.0;
 let imageIsLandscape = true;
 
 function updateStageLayout() {
@@ -113,6 +119,19 @@ function updateStageLayout() {
   refToolbar.style.order = useSideBySide ? '0' : '-1';
 }
 
+function applyZoom() {
+  const w = Math.round(baseDispW * zoomLevel);
+  const h = Math.round(baseDispH * zoomLevel);
+  refImg.style.width          = w + 'px';
+  refImg.style.height         = h + 'px';
+  refContainer.style.width    = w + 'px';
+  canvasContainer.style.width = w + 'px';
+  canvas.style.width          = w + 'px';
+  canvas.style.height         = h + 'px';
+  currentDispW = w;
+  updateStageLayout();
+}
+
 function setupStage(imgElement) {
   const naturalW = imgElement.naturalWidth;
   const naturalH = imgElement.naturalHeight;
@@ -120,29 +139,30 @@ function setupStage(imgElement) {
   const dispW    = Math.round(naturalW * scale);
   const dispH    = Math.round(naturalH * scale);
 
-  // Reference image display size
-  refImg.style.width  = dispW + 'px';
-  refImg.style.height = dispH + 'px';
-
-  // Pin container widths so sub-toolbars match image/canvas exactly
-  refContainer.style.width    = dispW + 'px';
-  canvasContainer.style.width = dispW + 'px';
-
-  // Canvas = same display size and same internal resolution
+  // Fix internal canvas resolution (independent of zoom)
   canvas.width  = dispW;
   canvas.height = dispH;
-  canvas.style.width  = dispW + 'px';
-  canvas.style.height = dispH + 'px';
 
-  // Store for resize handler, then compute initial layout
-  currentDispW     = dispW;
+  // Store base dimensions; apply current zoom (sets display sizes + layout)
+  baseDispW        = dispW;
+  baseDispH        = dispH;
   imageIsLandscape = naturalW >= naturalH;
-  updateStageLayout();
+  applyZoom();
 
   clearCanvas();
-  stage.style.display = 'flex';
-  hint.style.display  = 'none';
+  landing.style.display     = 'none';
+  topControls.style.display = 'flex';
+  stage.style.display       = 'flex';
 }
+
+function showLanding() {
+  stage.style.display       = 'none';
+  topControls.style.display = 'none';
+  landing.style.display     = 'flex';
+  cursorRing.style.display  = 'none';
+}
+
+changeImageBtn.addEventListener('click', showLanding);
 
 function loadImageFile(file) {
   if (!file || !file.type.startsWith('image/')) return;
@@ -157,6 +177,19 @@ function loadImageFile(file) {
 
 fileInput.addEventListener('change', e => {
   loadImageFile(e.target.files[0]);
+});
+
+// ── Example gallery ───────────────────────────────────────────────────────
+function loadImageFromUrl(src, filename) {
+  fetch(src)
+    .then(r => r.blob())
+    .then(blob => loadImageFile(new File([blob], filename, { type: blob.type })));
+}
+
+exampleThumbs.forEach(btn => {
+  btn.addEventListener('click', () => {
+    loadImageFromUrl(btn.dataset.src, btn.dataset.name);
+  });
 });
 
 // Re-evaluate side-by-side vs stacked when the window is resized
@@ -184,6 +217,13 @@ blurSlider.addEventListener('input', () => {
   blurValue.textContent = blurAmount === 0 ? 'Off' : `${blurAmount}px`;
   updateRefFilter();
   recorder.blurChange(blurAmount);
+});
+
+// ── Zoom ──────────────────────────────────────────────────────────────────
+zoomSlider.addEventListener('input', () => {
+  zoomLevel = parseInt(zoomSlider.value, 10) / 100;
+  zoomValue.textContent = zoomSlider.value + '%';
+  if (baseDispW > 0) applyZoom();
 });
 
 // ── Color selection ───────────────────────────────────────────────────────

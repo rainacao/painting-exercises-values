@@ -1,2 +1,2 @@
-# painting-practice-values
-practice ratio of values in painting
+# painting-exercises-values
+exercise of locating and replicating values in painting.

@@ -3,18 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painting Practice Values</title>
+  <title>Painting Exercises Values</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <h1>Painting Practice - Values</h1>
+  <h1>Painting Exercises - Values</h1>
   <a href="replay.html" id="replay-link">Session Replay →</a>
 
-  <!-- Upload -->
-  <div id="upload-area">
-    <label id="upload-label" for="file-input">Choose or drop a reference image</label>
-    <input type="file" id="file-input" accept="image/*" />
-    <p id="hint">Upload an image to begin</p>
+  <!-- Top controls (shown only when stage is active) -->
+  <div id="top-controls" style="display:none">
+    <button id="change-image-btn" class="toolbar-btn">← Change image</button>
+    <div id="zoom-group">
+      <span class="toolbar-label">Zoom</span>
+      <input type="range" id="zoom-slider" min="25" max="100" value="100" step="5" />
+      <span id="zoom-value">100%</span>
+    </div>
+  </div>
+
+  <!-- Landing screen (hidden once an image is loaded) -->
+  <div id="landing">
+
+    <!-- Upload -->
+    <div id="upload-area">
+      <label id="upload-label" for="file-input">Choose or drop a reference image</label>
+      <input type="file" id="file-input" accept="image/*" />
+      <p id="hint">Upload an image to begin</p>
+    </div>
+
+    <!-- Example gallery -->
+    <div id="example-gallery">
+      <span class="gallery-label">or choose an example</span>
+      <div id="example-thumbs">
+        <button class="example-thumb" data-src="images/zorn1891-waltz.jpg" data-name="zorn1891-waltz.jpg">
+          <img src="images/zorn1891-waltz.jpg" alt="Zorn – The Waltz" />
+          <span>Zorn – The Waltz, 1891</span>
+        </button>
+        <button class="example-thumb" data-src="images/sargent1878-austin.jpg" data-name="sargent1878-austin.jpg">
+          <img src="images/sargent1878-austin.jpg" alt="Sargent – Austin" />
+          <span>Sargent – Austin, 1878</span>
+        </button>
+        <button class="example-thumb" data-src="images/gaugin1892-taitian.webp" data-name="gaugin1892-taitian.webp">
+          <img src="images/gaugin1892-taitian.webp" alt="Gauguin – Tahitian" />
+          <span>Gauguin – Tahitian, 1892</span>
+        </button>
+      </div>
+    </div>
+
   </div>
 
   <!-- Stage (hidden until image loads) -->
@@ -48,7 +82,7 @@
           <span class="toolbar-label">Size</span>
           <div id="size-group">
             <input type="range" id="brush-size-slider" min="2" max="100" value="16" />
-            <div id="brush-preview"><div id="brush-dot"></div></div>
+            <span id="brush-size-value">16px</span>
           </div>
         </div>
         <!-- <button id="clear-btn" class="toolbar-btn">Clear</button> -->

@@ -28,6 +28,80 @@ h1 {
 }
 #replay-link:hover { color: #111; }
 
+/* ── Top controls (change image + zoom) ── */
+#top-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+#zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Landing screen ── */
+#landing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ── Example gallery ── */
+#example-gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.gallery-label {
+  font-size: 0.78rem;
+  color: #2e2e2e;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+#example-thumbs {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.example-thumb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  padding: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.1s;
+}
+.example-thumb:hover {
+  border-color: #444;
+  transform: scale(1.03);
+}
+.example-thumb img {
+  height: 90px;
+  width: auto;
+  border-radius: 3px;
+  display: block;
+}
+.example-thumb span {
+  font-size: 0.7rem;
+  color: #2e2e2e;
+  max-width: 110px;
+  text-align: center;
+  line-height: 1.3;
+}
+
 /* ── Upload area ── */
 #upload-area {
   display: flex;
@@ -102,13 +176,14 @@ h1 {
 /* Canvas toolbar: stacked rows */
 #canvas-toolbar {
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .toolbar-row {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 /* Brush size */
@@ -182,17 +257,47 @@ h1 {
   font-variant-numeric: tabular-nums;
 }
 
-#brush-preview {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100px;
-  height: 100px;
+/* Zoom slider */
+#zoom-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 90px;
+  height: 4px;
+  border-radius: 2px;
+  background: #5a5a5a;
+  outline: none;
+  cursor: pointer;
 }
-#brush-dot {
+#zoom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: #ddd;
-  transition: width 0.05s, height 0.05s;
+  cursor: pointer;
+}
+#zoom-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ddd;
+  cursor: pointer;
+  border: none;
+}
+
+#zoom-value {
+  font-size: 0.72rem;
+  color: #bbb;
+  min-width: 34px;
+  font-variant-numeric: tabular-nums;
+}
+
+#brush-size-value {
+  font-size: 0.72rem;
+  color: #bbb;
+  min-width: 32px;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Toolbar buttons */
