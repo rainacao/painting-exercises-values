@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Session Replay — Painting Practice</title>
+  <link rel="stylesheet" href="css/replay.css" />
+</head>
+<body>
+  <header>
+    <a href="index.html" id="back-link">← Practice</a>
+    <h1>Session Replay</h1>
+  </header>
+
+  <!-- Upload area -->
+  <div id="upload-area">
+    <label id="upload-label" for="json-input">Choose a session JSON file</label>
+    <input type="file" id="json-input" accept=".json,application/json" />
+    <p id="hint">Load a session JSON to begin — or drag and drop it anywhere</p>
+  </div>
+
+  <!-- Main content (hidden until a file is loaded) -->
+  <div id="main" style="display:none;">
+
+    <!-- Session info bar -->
+    <div id="session-info">
+      <span id="info-file"></span>
+      <span id="info-dims"></span>
+      <span id="info-duration"></span>
+    </div>
+
+    <!-- Replay canvas -->
+    <canvas id="replay-canvas"></canvas>
+
+    <!-- Playback controls -->
+    <div id="controls">
+      <button id="play-btn" class="ctrl-btn">▶</button>
+      <span id="time-display">0:00 / 0:00</span>
+      <input type="range" id="scrubber" min="0" value="0" step="1" />
+    </div>
+
+    <!-- Status bar: shows current brush state at the scrubber position -->
+    <div id="status-bar">
+      <div id="status-color"></div>
+      <span id="status-brush"></span>
+      <span id="status-bw"></span>
+    </div>
+
+    <!-- Annotation panel -->
+    <div id="annotation-panel">
+      <h2>Annotations</h2>
+      <div id="annotation-input-row">
+        <input type="text" id="annotation-text" placeholder="Note at current time… (Enter to add)" />
+        <button id="add-annotation-btn" class="ctrl-btn">Add</button>
+      </div>
+      <ul id="annotation-list"></ul>
+      <button id="export-annotations-btn" class="ctrl-btn">Export Annotations JSON</button>
+    </div>
+
+  </div>
+
+  <script src="js/replay.js"></script>
+</body>
+</html>
