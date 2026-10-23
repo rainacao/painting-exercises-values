@@ -199,6 +199,7 @@ window.addEventListener('resize', updateStageLayout);
 document.addEventListener('dragover', e => e.preventDefault());
 document.addEventListener('drop', e => {
   e.preventDefault();
+  if (landing.style.display === 'none') return; // ignore drops while drawing
   loadImageFile(e.dataTransfer.files[0]);
 });
 
